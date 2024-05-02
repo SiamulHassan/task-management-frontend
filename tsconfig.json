@@ -29,11 +29,12 @@
     ".next/types/**/*.ts",
     "src/app/task-management/page.tsx",
     "src/components/DndContext/dndData.js",
-    "src/app/overview/page.tsx",
+    "src/app/overview/page.js",
     "src/components/addProjectModal/addProjectModal.js",
     "src/components/Login/Login.js",
     "src/reactQuery/useFetchTask.js",
-    "src/components/addProjectModal/projectModalForm.js"
+    "src/components/addProjectModal/projectModalForm.js",
+    "src/reactQuery/useDeleteTask.js"
   ],
   "exclude": ["node_modules"]
 }
