@@ -28,7 +28,12 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/task-management/page.tsx",
-    "src/components/DndContext/dndData.js"
+    "src/components/DndContext/dndData.js",
+    "src/app/overview/page.tsx",
+    "src/components/addProjectModal/addProjectModal.js",
+    "src/components/Login/Login.js",
+    "src/reactQuery/useFetchTask.js",
+    "src/components/addProjectModal/projectModalForm.js"
   ],
   "exclude": ["node_modules"]
 }
