@@ -1,20 +1,9 @@
 "use client";
-
-import { cardsData } from "../../components/DndContext/dndData";
 import { useEffect, useState } from "react";
 import { Draggable, DropResult, Droppable } from "react-beautiful-dnd";
-// import LoadingSkeleton from "./LoadingSkeleton";
 import { DndContext } from "../../components/DndContext/DndContext";
 import { useTaskStore } from "../../store/TaskStore";
-// interface Cards {
-//   _id: number;
-//   projectName: string;
-//   taskName: string;
-//   taskDescription: string;
-//   deadline: string;
-//   dueDate: string;
-//   assignMembers: string[];
-// }
+
 interface IniCard {
   id: number;
   title: string;
@@ -29,36 +18,20 @@ interface IniCard {
   }[];
 }
 
-// interface Cards {
-//   _id: number;
-//   projectName: string;
-//   taskName: string;
-//   taskDescription: string;
-//   deadline: string;
-//   dueDate: string;
-//   assignMembers: string[];
-// }
 const DndExample = () => {
   const getManageTask = useTaskStore((state) => state.getManageTask);
   const allTask = useTaskStore((state) => state.iniCard);
-  console.log("test", allTask);
   useEffect(() => {
     getManageTask();
   }, [getManageTask]);
   const [data, setData] = useState<IniCard[] | []>([]);
-  // const [taskData, setTaskData] = useState<Cards[] | []>([]);
-  // console.log("now", taskData);
-
-  // project
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
-    // console.log(source.droppableId);
     if (source.droppableId !== destination.droppableId) {
       const newData = [...JSON.parse(JSON.stringify(data))];
-      //console.log("newS", newData);
-      //shallow copy concept
+
       const oldDroppableIndex = newData.findIndex(
         (x) => x.id == source.droppableId
       );
@@ -87,7 +60,7 @@ const DndExample = () => {
   return (
     <DndContext onDragEnd={onDragEnd}>
       <h1 className="text-center mt-8 mb-3 font-bold text-[25px] ">
-        Drag and Drop Application
+        Manage Tasks
       </h1>
       <div className="flex gap-4 justify-between my-20 mx-4 flex-col lg:flex-row">
         {data.map((val, index) => {
