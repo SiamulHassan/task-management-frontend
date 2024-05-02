@@ -3,10 +3,6 @@ import React, { useEffect, useState } from "react";
 
 import { Form, Input, DatePicker, Radio, Select, Switch } from "antd";
 import axios from "axios";
-// import { format } from "date-fns/format";
-import { parse } from "date-fns/parse";
-import { format } from "date-fns/format";
-// format(new Date(dataTask.deadline), "MM/dd/yyyy")
 const ProjectModalForm = ({ onFormChange, targetItemEdit }) => {
   const [dataTask] = targetItemEdit;
   console.log("dataTask", dataTask);
@@ -17,7 +13,7 @@ const ProjectModalForm = ({ onFormChange, targetItemEdit }) => {
       const {
         data: { members },
       } = await axios.get(
-        "http://localhost:8000/api/v1/members/create-members"
+        "https://task-management-backend-4s7p.onrender.com/api/v1/members/create-members"
       );
       // console.log("members", members);
       const memArr = [];
@@ -41,15 +37,7 @@ const ProjectModalForm = ({ onFormChange, targetItemEdit }) => {
         span: 14,
       }}
       layout="horizontal"
-      // initialValues={}
       onValuesChange={onFormChange}
-      // initialValues={
-      //   {
-      //     ...dataTask,
-      //     deadline: format(new Date(dataTask?.deadline), "MM/dd/yyyy") || "",
-      //     dueDate: format(new Date(dataTask?.dueDate), "MM/dd/yyyy") || "",
-      //   } || {}
-      // }
       style={{
         width: 650,
       }}

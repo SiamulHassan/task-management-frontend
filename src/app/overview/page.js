@@ -7,13 +7,6 @@ import AddProjectModal from "@/components/addProjectModal/addProjectModal";
 import { useTask } from "@/reactQuery/useFetchTask";
 import { format } from "date-fns/format";
 import { useDeleteTask } from "../../reactQuery/useDeleteTask";
-// import { useCreateTask } from "@/reactQuery/useCreateTask";
-// interface DataTask {
-//   _id: string;
-//   projectName: string;
-//   taskName: string;
-//   deadline: string; // Assuming deadline is a string representation of a date
-// }
 
 const OverView = () => {
   const { isLoading, data, error } = useTask();
