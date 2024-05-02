@@ -4,58 +4,55 @@ import { Col, Divider, Row, Button } from "antd";
 import { Card } from "antd";
 import { useRouter } from "next/navigation";
 import AddProjectModal from "@/components/addProjectModal/addProjectModal";
+import { useTask } from "@/reactQuery/useFetchTask";
+import { format } from "date-fns/format";
+import { useDeleteTask } from "../../reactQuery/useDeleteTask";
+// import { useCreateTask } from "@/reactQuery/useCreateTask";
 const OverView = () => {
+  const { isLoading, data, error } = useTask();
+  const { delTask } = useDeleteTask();
+
+  // const { data: createdData } = useCreateTask();
   const router = useRouter();
+  // const updatedTask =
+  //   createdData?.data?.task?.length > data?.data?.task?.length
+  //     ? createdData?.data?.task
+  //     : data?.data?.task;
+  // console.log("data l", data?.data?.task?.length);
+  // console.log("createdD", createdData);
   return (
     <div className="container mx-auto">
       <h2 className="my-6 font-bold text-3xl">Projects Overview</h2>
 
       <div className="add-project">
-        {/* <Divider orientation="left">sub-element align left</Divider> */}
-        <Row justify="start" align="middle" gutter={[4, 12]}>
-          <Col span={6}>
-            <Card
-              style={{
-                width: 300,
-              }}
-            >
-              <h3 className="font-bold text-2xl">Project Name</h3>
-              <p>deadlie: 4/5/24</p>
-              <div className="flex gap-3 mt-5">
-                <Button
-                  type="primary"
-                  onClick={() => router.push("/project-details")}
-                >
-                  View
-                </Button>
-                <Button type="primary">Edit</Button>
-                <Button type="primary">Delete</Button>
-              </div>
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card
-              style={{
-                width: 300,
-              }}
-            >
-              <h3 className="font-bold text-2xl">Project Name</h3>
-              <p>deadlie: 4/5/24</p>
-              <div className="flex gap-3 mt-5">
-                <Button
-                  type="primary"
-                  onClick={() => router.push("/project-details")}
-                >
-                  View
-                </Button>
-                <Button type="primary">Edit</Button>
-                <Button type="primary">Delete</Button>
-              </div>
-            </Card>
-          </Col>
+        <Row justify="start" align="middle" gutter={[6, 12]}>
+          {data?.data?.task.map((dataTask, key) => (
+            <Col span={8} key={dataTask._id}>
+              <Card title={dataTask.projectName} bordered={false}>
+                <p>Task Name : {dataTask.taskName}</p>
+                <p>
+                  Deadline : {format(new Date(dataTask.deadline), "MM/dd/yyyy")}
+                </p>
+                <div className="flex gap-3 mt-5">
+                  <Button
+                    type="primary"
+                    onClick={() => router.push("/project-details")}
+                  >
+                    View
+                  </Button>
+
+                  <AddProjectModal status="edit" dataTaskId={dataTask._id} />
+
+                  <Button type="primary" onClick={() => delTask(dataTask._id)}>
+                    Delete
+                  </Button>
+                </div>
+              </Card>
+            </Col>
+          ))}
+
           <Col>
-            <AddProjectModal />
-            {/* <Button type="primary">Add Project</Button> */}
+            <AddProjectModal status="add-project" />
           </Col>
         </Row>
       </div>

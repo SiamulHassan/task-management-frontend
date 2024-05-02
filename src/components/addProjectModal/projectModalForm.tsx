@@ -1,6 +1,37 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+
 import { Form, Input, DatePicker, Radio, Select, Switch } from "antd";
-const ProjectModalForm = ({ onFormChange }) => {
+import axios from "axios";
+// import { format } from "date-fns/format";
+import { parse } from "date-fns/parse";
+import { format } from "date-fns/format";
+// format(new Date(dataTask.deadline), "MM/dd/yyyy")
+const ProjectModalForm = ({ onFormChange, targetItemEdit }) => {
+  const [dataTask] = targetItemEdit;
+  console.log("dataTask", dataTask);
+  const [options, setOptions] = useState([]);
+  // getting members
+  useEffect(() => {
+    async function getMembers() {
+      const {
+        data: { members },
+      } = await axios.get(
+        "http://localhost:8000/api/v1/members/create-members"
+      );
+      // console.log("members", members);
+      const memArr = [];
+      members.map((member) => {
+        memArr.push({ label: member.name, value: member.email });
+      });
+      setOptions(memArr);
+    }
+    getMembers();
+  }, []);
+  const handleMemberChange = (value) => {
+    // api/v1/overview/create-overview
+    console.log(`select option : ${value}`);
+  };
   return (
     <Form
       labelCol={{
@@ -10,24 +41,49 @@ const ProjectModalForm = ({ onFormChange }) => {
         span: 14,
       }}
       layout="horizontal"
+      // initialValues={}
       onValuesChange={onFormChange}
+      // initialValues={
+      //   {
+      //     ...dataTask,
+      //     deadline: format(new Date(dataTask?.deadline), "MM/dd/yyyy") || "",
+      //     dueDate: format(new Date(dataTask?.dueDate), "MM/dd/yyyy") || "",
+      //   } || {}
+      // }
       style={{
         width: 650,
       }}
     >
       <Form.Item
+        initialValue={dataTask?.projectName}
         label="Project Name"
-        name="taskName"
+        name="projectName"
         rules={[
           {
             required: true,
-            message: "Please input project name!",
+            message: "Please input task name!",
           },
         ]}
       >
         <Input />
       </Form.Item>
+
       <Form.Item
+        initialValue={dataTask?.taskName}
+        label="Task Name"
+        name="taskName"
+        rules={[
+          {
+            required: true,
+            message: "Please input task name!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        initialValue={dataTask?.taskDescription}
         label="Task Description"
         name="taskDescription"
         rules={[
@@ -41,6 +97,8 @@ const ProjectModalForm = ({ onFormChange }) => {
       </Form.Item>
 
       <Form.Item
+        // initialValue={format(dataTask.deadline, "MM/dd/yyyy")}
+
         label="Deadline"
         name="deadline"
         rules={[
@@ -50,10 +108,11 @@ const ProjectModalForm = ({ onFormChange }) => {
           },
         ]}
       >
-        <DatePicker />
+        <Input type="date" />
       </Form.Item>
 
       <Form.Item
+        // initialValue={format(dataTask.dueDate, "MM/dd/yyyy") || "2024/03/25"}
         label="Due Date"
         name="dueDate"
         rules={[
@@ -63,7 +122,23 @@ const ProjectModalForm = ({ onFormChange }) => {
           },
         ]}
       >
-        <DatePicker />
+        <Input type="date" />
+      </Form.Item>
+      <Form.Item
+        name="assignMembers"
+        label="Assign Members"
+        initialValue={dataTask?.assignMembers}
+      >
+        <Select
+          mode="multiple"
+          style={{
+            width: "100%",
+          }}
+          placeholder="Please select"
+          // defaultValue={["a10", "c12"]}
+          onChange={handleMemberChange}
+          options={options}
+        />
       </Form.Item>
     </Form>
   );
