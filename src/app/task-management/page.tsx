@@ -6,33 +6,29 @@ import { Draggable, DropResult, Droppable } from "react-beautiful-dnd";
 // import LoadingSkeleton from "./LoadingSkeleton";
 import { DndContext } from "../../components/DndContext/DndContext";
 import { useTaskStore } from "../../store/TaskStore";
-interface Cards {
-  _id: number;
-  projectName: string;
-  taskName: string;
-  taskDescription: string;
-  deadline: string;
-  dueDate: string;
-  assignMembers: string[];
-}
+// interface Cards {
+//   _id: number;
+//   projectName: string;
+//   taskName: string;
+//   taskDescription: string;
+//   deadline: string;
+//   dueDate: string;
+//   assignMembers: string[];
+// }
 interface IniCard {
-  _id: number;
+  id: number;
   title: string;
+  tasks: {
+    _id: number;
+    projectName: string;
+    taskName: string;
+    taskDescription: string;
+    deadline: string;
+    dueDate: string;
+    assignMembers: string[];
+  }[];
 }
-const iniCard = [
-  {
-    id: 0,
-    title: "Todo",
-  },
-  {
-    id: 1,
-    title: "In Progress",
-  },
-  {
-    id: 2,
-    title: "Done",
-  },
-];
+
 // interface Cards {
 //   _id: number;
 //   projectName: string;
@@ -44,46 +40,46 @@ const iniCard = [
 // }
 const DndExample = () => {
   const getManageTask = useTaskStore((state) => state.getManageTask);
-  const allTask = useTaskStore((state) => state.manageTasks);
-  // console.log("test", allTask);
+  const allTask = useTaskStore((state) => state.iniCard);
+  console.log("test", allTask);
   useEffect(() => {
     getManageTask();
   }, [getManageTask]);
   const [data, setData] = useState<IniCard[] | []>([]);
-  const [taskData, setTaskData] = useState<Cards[] | []>([]);
-  console.log("now", data);
+  // const [taskData, setTaskData] = useState<Cards[] | []>([]);
+  // console.log("now", taskData);
 
   // project
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
+    // console.log(source.droppableId);
     if (source.droppableId !== destination.droppableId) {
-      const newData = [...JSON.parse(JSON.stringify(data))]; //shallow copy concept
+      const newData = [...JSON.parse(JSON.stringify(data))];
+      //console.log("newS", newData);
+      //shallow copy concept
       const oldDroppableIndex = newData.findIndex(
-        (x) => x.id == source.droppableId.split("droppable")[1]
+        (x) => x.id == source.droppableId
       );
       const newDroppableIndex = newData.findIndex(
-        (x) => x.id == destination.droppableId.split("droppable")[1]
+        (x) => x.id == destination.droppableId
       );
-      const [item] = newData[oldDroppableIndex].components.splice(
-        source.index,
-        1
-      );
-      newData[newDroppableIndex].components.splice(destination.index, 0, item);
+      const [item] = newData[oldDroppableIndex].tasks.splice(source.index, 1);
+      newData[newDroppableIndex].tasks.splice(destination.index, 0, item);
       setData([...newData]);
     } else {
       const newData = [...JSON.parse(JSON.stringify(data))]; //shallow copy concept
       const droppableIndex = newData.findIndex(
-        (x) => x.id == source.droppableId.split("droppable")[1]
+        (x) => x.id == source.droppableId
       );
-      const [item] = newData[droppableIndex].components.splice(source.index, 1);
-      newData[droppableIndex].components.splice(destination.index, 0, item);
+      const [item] = newData[droppableIndex].tasks.splice(source.index, 1);
+      newData[droppableIndex].tasks.splice(destination.index, 0, item);
       setData([...newData]);
     }
   };
   useEffect(() => {
-    setTaskData(allTask);
+    setData(allTask);
   }, [allTask]);
   if (!data.length) {
     // return <LoadingSkeleton />;
@@ -94,9 +90,9 @@ const DndExample = () => {
         Drag and Drop Application
       </h1>
       <div className="flex gap-4 justify-between my-20 mx-4 flex-col lg:flex-row">
-        {iniCard.map((card, index) => {
+        {data.map((val, index) => {
           return (
-            <Droppable key={index} droppableId={`droppable${card.id}`}>
+            <Droppable key={index} droppableId={`${val.id}`}>
               {(provided) => (
                 <div
                   className="p-5 lg:w-1/3 w-full bg-white  border-gray-400 border border-dashed"
@@ -104,12 +100,12 @@ const DndExample = () => {
                   ref={provided.innerRef}
                 >
                   <h2 className="text-center font-bold mb-6 text-black">
-                    {card.title}
+                    {val.title}
                   </h2>
-                  {taskData?.map((component, index) => (
+                  {val?.tasks?.map((component, index) => (
                     <Draggable
                       key={component._id}
-                      draggableId={component._id.toString()}
+                      draggableId={`${val.id}-${component._id}`}
                       index={index}
                     >
                       {(provided) => (
@@ -119,12 +115,12 @@ const DndExample = () => {
                           {...provided.draggableProps}
                           ref={provided.innerRef}
                         >
-                          {component.taskName}
+                          <p>{component.taskName}</p>
+                          <p>{component.taskDescription}</p>
                         </div>
                       )}
                     </Draggable>
                   ))}
-
                   {provided.placeholder}
                 </div>
               )}
