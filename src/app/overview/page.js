@@ -8,12 +8,6 @@ import { useTask } from "@/reactQuery/useFetchTask";
 import { format } from "date-fns/format";
 import { useDeleteTask } from "../../reactQuery/useDeleteTask";
 // import { useCreateTask } from "@/reactQuery/useCreateTask";
-interface DataTask {
-  _id: string;
-  projectName: string;
-  taskName: string;
-  deadline: string; // Assuming deadline is a string representation of a date
-}
 
 const OverView = () => {
   const { isLoading, data, error } = useTask();
@@ -27,7 +21,7 @@ const OverView = () => {
 
       <div className="add-project">
         <Row justify="start" align="middle" gutter={[6, 12]}>
-          {data?.data?.task.map((dataTask: DataTask) => (
+          {data?.data?.task.map((dataTask) => (
             <Col span={8} key={dataTask._id}>
               <Card title={dataTask.projectName} bordered={false}>
                 <p>Task Name : {dataTask.taskName}</p>
